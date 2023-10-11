@@ -21,18 +21,25 @@ const anecdoteSlice = createSlice({
         anec.id !== id ? anec : updatedAnecdote
       )
     },
-    createAnecdote(state, action) {
+    addAnecdote(state, action) {
       return state.concat(action.payload)
     }
   }
 })
 
-export const { setAnecdotes, updateVote, createAnecdote } = anecdoteSlice.actions
+export const { setAnecdotes, updateVote, addAnecdote } = anecdoteSlice.actions
 
 export const initializeAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
     dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newObj = await anecdoteService.create(content)
+    dispatch(addAnecdote(newObj))
   }
 }
 
