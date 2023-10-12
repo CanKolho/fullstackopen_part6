@@ -9,8 +9,11 @@ const App = () => {
   const dispatch = useNotificationDispatch()
 
   const updateAnecdoteMutation = useMutation(updateAnecdote, {
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    onSuccess: (updatedAnecdote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      queryClient.setQueryData(['anecdotes'], anecdotes.map(anec =>
+        anec.id !== updatedAnecdote.id ? anec : updatedAnecdote  
+      ))
     },
   })
 

@@ -7,8 +7,13 @@ const AnecdoteForm = () => {
   const dispatch = useNotificationDispatch()
 
   const newAnecdoteMutation = useMutation(createAnecdote, {
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    onSuccess: (newAnecdote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+    },
+    onError: () => {
+      dispatch({ type: 'SET_NOTIF', payload: 'too short anecdote, must have length 5 or more' })
+      setTimeout(() => dispatch({type: 'CLEAR_NOTIF'}), 5000)
     },
   })
   
